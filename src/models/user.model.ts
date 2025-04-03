@@ -4,11 +4,8 @@ export interface User {
   first_name: string;    // NN (Not Null)
   last_name: string;     // NN
   role: UserRole;        // NN (ADMIN, CLIENT)
-  email: string;         // NN
   password: string;      // NN (stocké de façon sécurisée/hashée)
   isActive: boolean;     // Pour la fonctionnalité de désactivation/réactivation
-  createdAt: Date;       // Date de création du compte
-  updatedAt: Date;       // Date de dernière mise à jour
 }
 
 // Enum pour les rôles possibles
@@ -29,7 +26,5 @@ export interface UserDto {
 // Full DTO pour User (informations détaillées)
 export interface UserFullDto extends UserDto {
   email: string;
-  createdAt: Date;
-  updatedAt: Date;
   // Pas de mot de passe pour des raisons de sécurité
 }
