@@ -1,55 +1,35 @@
-// src/models/user.model.ts
+// User Model
+export interface User {
+  userid: number;        // Primary Key
+  first_name: string;    // NN (Not Null)
+  last_name: string;     // NN
+  role: UserRole;        // NN (ADMIN, CLIENT)
+  email: string;         // NN
+  password: string;      // NN (stocké de façon sécurisée/hashée)
+  isActive: boolean;     // Pour la fonctionnalité de désactivation/réactivation
+  createdAt: Date;       // Date de création du compte
+  updatedAt: Date;       // Date de dernière mise à jour
+}
 
+// Enum pour les rôles possibles
 export enum UserRole {
-    VISITOR = "VISITOR",
-    CUSTOMER = "CLIENT",
-    ADMIN = "ADMIN"
-  }
-  // ADMIN can activ or desact an user
-  export enum UserStatus {
-    ACTIVE = "ACTIVE",
-    INACTIVE = "INACTIVE"
-  }
-  
-  export interface User {
-    id?: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string; // Note: In a real application, this would be hashed
-    role: UserRole;
-    status: UserStatus;
-    createdAt?: Date;
-    updatedAt?: Date;
-  }
-  
-  export interface UserDTO {
-    id: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    role: UserRole;
-    status: UserStatus;
-  }
-  
-  export interface UserFullDTO extends UserDTO {
-    createdAt: Date;
-    updatedAt: Date;
-  }
-  
-  export interface UserCreateDTO {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-    role?: UserRole; // Optional because normal users can only create CUSTOMER accounts
-  }
-  
-  export interface UserUpdateDTO {
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-    password?: string;
-    role?: UserRole;
-    status?: UserStatus;
-  }
+  ADMIN = "ADMIN",
+  CLIENT = "CLIENT"
+}
+
+// Simple DTO pour User (informations de base)
+export interface UserDto {
+  userid: number;
+  first_name: string;
+  last_name: string;
+  role: UserRole;
+  isActive: boolean;
+}
+
+// Full DTO pour User (informations détaillées)
+export interface UserFullDto extends UserDto {
+  email: string;
+  createdAt: Date;
+  updatedAt: Date;
+  // Pas de mot de passe pour des raisons de sécurité
+}
