@@ -9,26 +9,23 @@ CREATE TABLE users (
 );
 
 -- Categories table
-CREATE TABLE categories (
-    categoryid INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    description TEXT NOT NULL,
-    status TEXT NOT NULL,
-    deleted BOOLEAN DEFAULT FALSE,
-    CHECK (status IN ('ACTIVE', 'INACTIVE'))
+CREATE TABLE store.categories (
+    category_id INTEGER PRIMARY KEY,
+    name VARCHAR(30) NOT NULL,
+    description TEXT,
+    status VARCHAR(11) NOT NULL CHECK (status IN ('AVAILABLE', 'UNAVAILABLE'))
+    , UNIQUE(name)
 );
 
 -- Products table
-CREATE TABLE products (
-    productid INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    description TEXT NOT NULL,
-    unit_price REAL NOT NULL CHECK (unit_price > 0),
-    status TEXT NOT NULL,
-    categorie INTEGER,
-    deleted BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (categorie) REFERENCES categories(categoryid),
-    CHECK (status IN ('AVAILABLE', 'UNAVAILABLE'))
+CREATE TABLE store.products (
+    product_id INTEGER PRIMARY KEY,
+    category_id INTEGER NOT NULL REFERENCES store.categories(category_id),
+    name VARCHAR(30) NOT NULL,
+    description TEXT,
+    price DECIMAL NOT NULL,
+    status VARCHAR(11) NOT NULL CHECK (status IN ('AVAILABLE', 'UNAVAILABLE'))
+    , UNIQUE(name)
 );
 
 -- Create orders table
