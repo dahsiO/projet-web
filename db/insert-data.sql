@@ -31,26 +31,24 @@ CREATE TABLE products (
     CHECK (status IN ('AVAILABLE', 'UNAVAILABLE'))
 );
 
--- Orders table
+-- Create orders table
 CREATE TABLE orders (
-    orderid INTEGER PRIMARY KEY AUTOINCREMENT,
-    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status TEXT NOT NULL,
-    user INTEGER NOT NULL,
-    deleted BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (user) REFERENCES users(userid),
-    CHECK (status IN ('NEW', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'))
+    orderid INT PRIMARY KEY,
+    order_date DATE NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    user_FK INT NOT NULL,
+    FOREIGN KEY (user_FK) REFERENCES users(userid)
 );
 
--- Orders items table (junction table between orders and products)
+-- Create orders_items table
 CREATE TABLE orders_items (
-    order_product INTEGER PRIMARY KEY AUTOINCREMENT,
-    quantity INTEGER NOT NULL CHECK (quantity > 0),
-    commande INTEGER NOT NULL,
-    product INTEGER NOT NULL,
-    deleted BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (commande) REFERENCES orders(orderid),
-    FOREIGN KEY (product) REFERENCES products(productid)
+    order_productid INT PRIMARY KEY,
+    quantity INT NOT NULL,
+    commands_FK INT,
+    product_FK INT NOT NULL,
+    orderid_FK INT NOT NULL,
+    FOREIGN KEY (product_FK) REFERENCES products(productid),
+    FOREIGN KEY (orderid_FK) REFERENCES orders(orderid)
 );
 
 -- Tickets table
