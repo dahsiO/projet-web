@@ -5,7 +5,7 @@ CREATE TABLE users (
     last_name TEXT NOT NULL,
     role TEXT NOT NULL,
     deleted BOOLEAN DEFAULT FALSE,
-    CHECK (role IN ('CLIENT', 'ADMIN'))
+    CHECK (role IN ('CLIENT', 'ADMIN' ,'VISITOR'))
 );
 
 -- Categories table
