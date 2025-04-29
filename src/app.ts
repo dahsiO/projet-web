@@ -1,20 +1,18 @@
-// import dependencies
-const cors = require('cors');
-import express from "express";
-//import {Response, Request} from 'express';
-//import {doctorsController} from './controllers/doctors.controller';
-//import { patientsController } from "./controllers/patients.controller";
+import express from 'express';
+import cors from 'cors';
+import { Request, Response } from 'express';
+import { usersController } from './controllers/users.controller';
+import { ticketsController } from './controllers/tickets.controller';
+import { authMiddleware } from './middlewares/auth.middleware';
 
-// creates an express app
 export const app = express();
 app.use(cors());
 app.use(express.json());
 
-// defines a dummy route
-//app.get('/', (req: Request, res: Response) => {
- // res.send("Bonjour tout le monde");
-//});
+app.get('/', (req: Request, res: Response) => {
+  res.send('Bienvenue sur l\'API Cozy Corner');
+});
 
-// use the controller to use the route
-//app.use('/doctors', doctorsController);
-//app.use('/patients', patientsController);
+app.use(authMiddleware);
+app.use('/users', usersController);
+app.use('/tickets', ticketsController);

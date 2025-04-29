@@ -1,125 +1,102 @@
--- Users table
+-- Users Table
 CREATE TABLE users (
-    userid INTEGER PRIMARY KEY AUTOINCREMENT,
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL,
-    role TEXT NOT NULL,
-    deleted BOOLEAN DEFAULT FALSE,
-    CHECK (role IN ('CLIENT', 'ADMIN' ,'VISITOR'))
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    role VARCHAR(6) NOT NULL DEFAULT 'client' CHECK (role IN ('client', 'admin')),
+    status VARCHAR(8) NOT NULL DEFAULT 'ENABLED' CHECK (status IN ('ENABLED', 'DISABLED'))
 );
 
--- Categories table
-CREATE TABLE store.categories (
-    category_id INTEGER PRIMARY KEY,
-    name VARCHAR(30) NOT NULL,
-    description TEXT,
-    status VARCHAR(11) NOT NULL CHECK (status IN ('AVAILABLE', 'UNAVAILABLE'))
-    , UNIQUE(name)
-);
-
--- Products table
-CREATE TABLE store.products (
-    product_id INTEGER PRIMARY KEY,
-    category_id INTEGER NOT NULL REFERENCES store.categories(category_id),
-    name VARCHAR(30) NOT NULL,
-    description TEXT,
-    price DECIMAL NOT NULL,
-    status VARCHAR(11) NOT NULL CHECK (status IN ('AVAILABLE', 'UNAVAILABLE'))
-    , UNIQUE(name)
-);
-
--- Create orders table
-CREATE TABLE orders (
-    orderid INT PRIMARY KEY,
-    order_date DATE NOT NULL,
-    status VARCHAR(50) NOT NULL,
-    user_FK INT NOT NULL,
-    FOREIGN KEY (user_FK) REFERENCES users(userid)
-);
-
--- Create orders_items table
-CREATE TABLE orders_items (
-    order_productid INT PRIMARY KEY,
-    quantity INT NOT NULL,
-    commands_FK INT,
-    product_FK INT NOT NULL,
-    orderid_FK INT NOT NULL,
-    FOREIGN KEY (product_FK) REFERENCES products(productid),
-    FOREIGN KEY (orderid_FK) REFERENCES orders(orderid)
-);
-
--- Tickets table
-CREATE TABLE tickets (
-    ticketid INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
+-- Categories Table
+CREATE TABLE categories (
+    category_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    name VARCHAR(50) NOT NULL,
     description TEXT NOT NULL,
-    status TEXT NOT NULL,
-    user INTEGER NOT NULL,
-    order INTEGER,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    deleted BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (user) REFERENCES users(userid),
-    FOREIGN KEY (order) REFERENCES orders(orderid),
-    CHECK (status IN ('NEW', 'IN_PROGRESS', 'CLOSED'))
+    status VARCHAR(11) NOT NULL DEFAULT 'AVAILABLE' CHECK (status IN ('AVAILABLE', 'UNAVAILABLE'))
 );
 
--- Insert sample data for testing
+-- Products Table
+CREATE TABLE products (
+    product_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    description TEXT NOT NULL,
+    price DOUBLE PRECISION NOT NULL,
+    category_id INTEGER NOT NULL,
+    status VARCHAR(11) NOT NULL DEFAULT 'AVAILABLE' CHECK (status IN ('AVAILABLE', 'UNAVAILABLE')),
+    FOREIGN KEY (category_id) REFERENCES categories(category_id)
+);
 
--- Sample users
-INSERT INTO users (first_name, last_name, role) VALUES 
-('Admin', 'User', 'ADMIN'),
-('John', 'Doe', 'CLIENT'),
-('Jane', 'Smith', 'CLIENT'),
-('Marc', 'Johnson', 'CLIENT'),
-('Sophie', 'Martin', 'CLIENT');
+-- Orders Table
+CREATE TABLE orders (
+    order_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    client INTEGER NOT NULL,
+    order_date TIMESTAMP,
+    status VARCHAR(10) NOT NULL DEFAULT 'NEW' CHECK (status IN ('NEW', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED')),
+    FOREIGN KEY (client) REFERENCES users(user_id)
+);
 
--- Sample categories
-INSERT INTO categories (name, description, status) VALUES 
-('Living Room', 'Furniture and decoration for your living room', 'ACTIVE'),
-('Bedroom', 'Everything you need for a cozy bedroom', 'ACTIVE'),
-('Kitchen', 'Modern kitchen furniture and accessories', 'ACTIVE'),
-('Office', 'Professional and comfortable office furniture', 'ACTIVE'),
-('Bathroom', 'Bathroom furniture and accessories', 'ACTIVE'),
-('Outdoor', 'Garden and patio furniture', 'INACTIVE');
+-- Order Items Table
+CREATE TABLE order_items (
+    order_fk INTEGER NOT NULL,
+    product INTEGER NOT NULL,
+    unit_price DOUBLE PRECISION,
+    quantity INTEGER NOT NULL,
+    PRIMARY KEY (order_fk, product),
+    FOREIGN KEY (order_fk) REFERENCES orders(order_id),
+    FOREIGN KEY (product) REFERENCES products(product_id)
+);
 
--- Sample products
-INSERT INTO products (name, description, unit_price, status, categorie) VALUES 
-('Modern Sofa', 'A comfortable 3-seat sofa with washable covers', 899.99, 'AVAILABLE', 1),
-('Coffee Table', 'Wooden coffee table with storage space', 299.50, 'AVAILABLE', 1),
-('Queen Bed Frame', 'Durable queen-sized bed frame with headboard', 599.99, 'AVAILABLE', 2),
-('Office Desk', 'Ergonomic office desk with drawers', 449.99, 'AVAILABLE', 4),
-('Kitchen Island', 'Multifunctional kitchen island with storage', 749.99, 'AVAILABLE', 3),
-('Bedside Table', 'Elegant bedside table with drawer', 149.99, 'AVAILABLE', 2),
-('Dining Table', 'Extendable dining table for 6-8 people', 599.99, 'AVAILABLE', 3),
-('Bookshelf', 'Tall bookshelf with adjustable shelves', 249.99, 'AVAILABLE', 1),
-('Armchair', 'Comfortable armchair with footrest', 399.99, 'AVAILABLE', 1),
-('Bathroom Cabinet', 'Wall-mounted bathroom cabinet with mirror', 199.99, 'AVAILABLE', 5),
-('Garden Set', 'Table and 4 chairs for outdoor use', 499.99, 'UNAVAILABLE', 6);
+-- Tickets Table
+CREATE TABLE tickets (
+    ticket_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    order_fk INTEGER NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    description TEXT NOT NULL,
+    status VARCHAR(11) NOT NULL DEFAULT 'OPEN' CHECK (status IN ('OPEN', 'IN_PROGRESS', 'CLOSED')),
+    FOREIGN KEY (order_fk) REFERENCES orders(order_id)
+);
 
--- Sample orders
-INSERT INTO orders (order_date, status, user) VALUES 
-('2024-04-01 10:30:00', 'NEW', 2),
-('2024-04-02 14:15:00', 'PROCESSING', 3),
-('2024-03-28 09:45:00', 'SHIPPED', 4),
-('2024-03-15 16:20:00', 'DELIVERED', 5),
-('2024-04-04 11:10:00', 'CANCELLED', 2);
+-- Insert Sample Data
 
--- Sample order items
-INSERT INTO orders_items (quantity, commande, product) VALUES 
-(1, 1, 1),  -- Order 1: 1 Modern Sofa
-(2, 1, 2),  -- Order 1: 2 Coffee Tables
-(1, 2, 3),  -- Order 2: 1 Queen Bed Frame
-(1, 2, 6),  -- Order 2: 1 Bedside Table
-(1, 3, 4),  -- Order 3: 1 Office Desk
-(1, 3, 8),  -- Order 3: 1 Bookshelf
-(1, 4, 5),  -- Order 4: 1 Kitchen Island
-(6, 4, 7),  -- Order 4: 6 Dining Tables
-(1, 5, 9);  -- Order 5: 1 Armchair
+-- Users
+INSERT INTO users(first_name, last_name, role) VALUES('Jean', 'Valles', 'admin');
+INSERT INTO users(first_name, last_name) VALUES('Abdel', 'Kader');
+INSERT INTO users(first_name, last_name, status) VALUES('Alice', 'Johnson', 'DISABLED');
+INSERT INTO users(first_name, last_name) VALUES('Martin', 'Dupont');
+INSERT INTO users(first_name, last_name) VALUES('Sophie', 'Durand');
+INSERT INTO users(first_name, last_name) VALUES('Lucas', 'Moreau');
 
--- Sample tickets
-INSERT INTO tickets (title, description, status, user, order, created_at) VALUES 
-('Delivery Question', 'When can I expect my order to be delivered?', 'NEW', 2, 1, '2024-04-02 08:15:00'),
-('Damaged Product', 'My coffee table arrived with a scratch on the surface', 'IN_PROGRESS', 3, 2, '2024-04-03 10:30:00'),
-('Order Cancellation', 'I would like to cancel my recent order', 'CLOSED', 5, 4, '2024-03-16 09:45:00'),
-('Missing Parts', 'The bookshelf is missing some screws and assembly instructions', 'NEW', 4, 3, '2024-04-01 14:20:00'),
-('Return Request', 'The armchair does not match my interior, I would like to return it', 'IN_PROGRESS', 2, 5, '2024-04-05 11:05:00');
+-- Categories
+INSERT INTO categories(name, description) VALUES
+('Electronics', 'Devices, gadgets, and accessories'),
+('Books', 'Various kinds of books and literature'),
+('Clothing', 'Apparel and accessories for men and women'),
+('Home & Kitchen', 'Furniture, appliances, and utensils for home and kitchen');
+
+-- Products
+INSERT INTO products(name, description, price, category_id) VALUES
+('Smartphone', 'Latest model with advanced features', 699.99, 1),
+('Laptop', 'High performance laptop for professionals', 1299.49, 1),
+('Novel', 'A best-selling fiction book', 14.99, 2),
+('T-shirt', 'Cotton t-shirt for daily use', 19.99, 3),
+('Microwave Oven', '800W microwave with grill function', 89.99, 4);
+
+-- Orders
+INSERT INTO orders(client, order_date) VALUES
+(2, CURRENT_TIMESTAMP),
+(3, CURRENT_TIMESTAMP),
+(4, CURRENT_TIMESTAMP);
+
+-- Order Items
+INSERT INTO order_items(order_fk, product, unit_price, quantity) VALUES
+(1, 1, 699.99, 1),
+(1, 3, 14.99, 2),
+(2, 2, 1299.49, 1),
+(3, 4, 19.99, 3),
+(3, 5, 89.99, 1);
+
+-- Tickets
+INSERT INTO tickets(order_fk, title, description) VALUES
+(1, 'Late Delivery', 'The delivery is taking longer than expected.'),
+(2, 'Wrong Item', 'Received a different laptop model than ordered.'),
+(3, 'Damaged Product', 'Microwave was damaged on arrival.');
