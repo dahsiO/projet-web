@@ -1,38 +1,77 @@
-// src/controllers/users.controller.ts
 import { Router, Request, Response } from 'express';
 import { UsersService } from '../services/users.service';
-import { User } from '../models/user.model';
+import { User, UserRole } from '../models/user.model';
 
 export const usersController = Router();
 
 usersController.post('/', (req: Request, res: Response) => {
-  const user = req.body as Omit<User, 'user_id' | 'status'>;
-  const newUser = UsersService.create(user);
-  res.status(201).json(newUser);
+  try {
+    const userData = {
+      first_name: req.body.first_name || '',
+      last_name: req.body.last_name || '',
+      role: UserRole.CLIENT // Par défaut, les nouveaux utilisateurs sont des clients
+    };
+    
+    const newUser = UsersService.create(userData);
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(400).send('Invalid data');
+  }
 });
 
 usersController.get('/:id', (req: Request, res: Response) => {
+  const idUser = Number(req.query.idUser);
+  
   const id = parseInt(req.params.id);
-  const user = UsersService.getById(id);
-  if (!user) return res.status(404).send('User not found');
-  res.status(200).json(user);
+  if (isNaN(id)) return res.status(400).send('Invalid ID');
+  
+  try {
+    const user = UsersService.getById(id, idUser);
+    if (!user) return res.status(404).send('User not found');
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(401).send('Unauthorized access');
+  }
 });
 
 usersController.put('/', (req: Request, res: Response) => {
-  const user = req.body as User;
-  const updatedUser = UsersService.update(user);
-  if (!updatedUser) return res.status(404).send('User not found');
-  res.status(200).json(updatedUser);
+  const idUser = Number(req.body.idUser);
+  
+  try {
+    const user = req.body as User;
+    const updatedUser = UsersService.update(user, idUser);
+    if (!updatedUser) return res.status(404).send('User not found');
+    res.status(200).json(updatedUser);
+  } catch (error: any) { // Correction ici: typer l'erreur comme 'any'
+    if (error.message === 'Unauthorized') {
+      return res.status(401).send('Unauthorized access');
+    }
+    res.status(400).send('Invalid data');
+  }
 });
 
 usersController.delete('/:id', (req: Request, res: Response) => {
+  const idUser = Number(req.query.idUser);
+  
   const id = parseInt(req.params.id);
-  const result = UsersService.disable(id);
-  if (!result) return res.status(404).send('User not found');
-  res.status(200).send('User disabled');
+  if (isNaN(id)) return res.status(400).send('Invalid ID');
+  
+  try {
+    const result = UsersService.disable(id, idUser);
+    if (!result) return res.status(404).send('User not found');
+    res.status(200).send('User disabled');
+  } catch (error) {
+    res.status(401).send('Unauthorized access');
+  }
 });
 
-usersController.get('/', (_req: Request, res: Response) => {
-  const users = UsersService.getAll();
-  res.status(200).json(users);
-});
+usersController.get('/', (req: Request, res: Response) => {
+  const idUser = Number(req.query.idUser);
+  
+  try {
+    const users = UsersService.getAll(idUser);
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(401).send('Unauthorized access');
+  }
+})

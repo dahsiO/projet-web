@@ -6,7 +6,7 @@ iduser: 1
 ###
 # Get a specific user by ID
 GET http://localhost:3000/users/1 HTTP/1.1
-iduser: 1
+iduser: 4
 
 ###
 # Create a new user
