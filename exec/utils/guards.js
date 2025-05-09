@@ -6,6 +6,7 @@ exports.isCategory = isCategory;
 exports.isUser = isUser;
 exports.isUserUpdate = isUserUpdate;
 exports.isValidId = isValidId;
+exports.isTicket = isTicket;
 function isProduct(data) {
     return (typeof data === 'object' && data !== null &&
         typeof data.name === 'string' &&
@@ -34,4 +35,13 @@ function isUserUpdate(data) {
 }
 function isValidId(id) {
     return typeof id === 'number' && id > 0;
+}
+const ticket_model_1 = require("../models/ticket.model");
+function isTicket(data) {
+    return (typeof data === 'object' && data !== null &&
+        typeof data.order_fk === 'number' &&
+        typeof data.title === 'string' &&
+        typeof data.description === 'string' &&
+        (data.status === undefined || Object.values(ticket_model_1.TicketStatus).includes(data.status)) &&
+        (data.priority === undefined || Object.values(ticket_model_1.TicketPriority).includes(data.priority)));
 }

@@ -9,12 +9,10 @@ import {
 } from '../controllers/admin.controllers';
 
 import {
-  
   validateProduct,
   validateProductIdParam,
   logProductRequest
-} from '../middleware/auth.Middleware';
-
+} from '../middlewares/auth.middleware'; 
 
 const router = Router();
 

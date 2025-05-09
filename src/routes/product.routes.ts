@@ -5,8 +5,8 @@ import {
   getProductDetails,
   updateProductGlobal
 } from '../controllers/product.controller';
-import { validateProduct, validateProductIdParam } from '../middleware/auth.middleware';
-import { resolveIdParam } from '../middleware/validateCategoryIdParam';
+import { validateProduct, validateProductIdParam } from '../middlewares/auth.middleware';
+import { resolveIdParam } from '../middlewares/validateCategoryIdParam';
 
 const router = Router();
 

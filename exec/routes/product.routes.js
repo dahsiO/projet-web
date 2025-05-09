@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const product_services_1 = require("../services/product.services");
 const product_controller_1 = require("../controllers/product.controller");
-const auth_middleware_1 = require("../middleware/auth.middleware");
-const validateCategoryIdParam_1 = require("../middleware/validateCategoryIdParam");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+const validateCategoryIdParam_1 = require("../middlewares/validateCategoryIdParam");
 const router = (0, express_1.Router)();
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const include = req.query.includeUnavailable === 'true';

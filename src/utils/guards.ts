@@ -1,5 +1,6 @@
 // src/guards/product.guard.ts
 
+
 export function isProduct(data: any): boolean {
     return (
       typeof data === 'object' && data !== null&&
@@ -46,6 +47,18 @@ export function isProduct(data: any): boolean {
     return typeof id === 'number' && id > 0;
   }
   
+  import { TicketStatus, TicketPriority } from '../models/ticket.model';
+
+export function isTicket(data: any): boolean {
+  return (
+    typeof data === 'object' && data !== null &&
+    typeof data.order_fk === 'number' &&
+    typeof data.title === 'string' &&
+    typeof data.description === 'string' &&
+    (data.status === undefined || Object.values(TicketStatus).includes(data.status)) &&
+    (data.priority === undefined || Object.values(TicketPriority).includes(data.priority))
+  );
+}
   
 
   

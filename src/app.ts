@@ -4,11 +4,11 @@ import { Request, Response } from 'express';
 import { usersController } from './controllers/users.controller';
 import { ticketsController } from './controllers/tickets.controller';
 import { authMiddleware } from './middlewares/auth.middleware';
-import  {orderRoute}  from './routes/order.route';
+import orderRoute from './routes/order.route';  
 import productRoutes from './routes/product.routes'
 import adminRoutes from './routes/admin.routes'
-import { initDb } from './db/database';  // Chemin mis à jour
 import categoryRoutes from './routes/category.routes';
+//import { initDb } from './db';  // Chemin corrigé
 
 export const app = express();
 app.use(cors());
