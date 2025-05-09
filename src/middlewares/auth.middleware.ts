@@ -26,14 +26,14 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
       return res.status(400).send('Invalid idUser format');
     }
 
-    // Check if the user exists (by trying to get the user by ID)
+   
     const user = UsersService.getById(userId, userId);
     
     if (!user) {
       return res.status(401).send('Authentication failed: User not found');
     }
 
-    // Store user info in request for later use
+    
     (req as any).authenticatedUser = user;
     (req as any).userId = userId;
     next();

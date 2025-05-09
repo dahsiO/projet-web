@@ -1,7 +1,7 @@
 // src/services/users.service.ts
 import { User, UserRole, UserStatus } from '../models/user.model';
 
-// Simulation d'une base de données avec les champs mis à jour
+// Simulation 
 let users: User[] = [
   {
     user_id: 1,
@@ -25,7 +25,7 @@ let users: User[] = [
 
 export class UsersService {
   /**
-   * Crée un nouvel utilisateur
+   * new user
    */
   static create(userData: Omit<User, 'user_id' | 'status' | 'created_at' | 'updated_at'>): User {
     const newUser: User = {
@@ -41,13 +41,12 @@ export class UsersService {
   }
 
   /**
-   * Récupère un utilisateur par son ID
-   * Si l'utilisateur est un client, il ne peut accéder qu'à ses propres informations
+   * get user by id
    */
   static getById(id: number, requestUserId: number): User | null {
     const requestUser = users.find(u => u.user_id === requestUserId);
     
-    // Vérifier si l'utilisateur existe
+    
     if (!requestUser) {
       throw new Error('Unauthorized');
     }
@@ -68,37 +67,35 @@ export class UsersService {
   }
 
   /**
-   * Met à jour un utilisateur
-   * Si l'utilisateur est un client, il ne peut modifier que ses propres informations
-   * Un client ne peut pas changer son rôle
+   *update 
    */
   static update(userData: User, requestUserId: number): User | null {
     const requestUser = users.find(u => u.user_id === requestUserId);
     
-    // Vérifier si l'utilisateur existe
+    //user existe
     if (!requestUser) {
       throw new Error('Unauthorized');
     }
     
     const userIndex = users.findIndex(u => u.user_id === userData.user_id);
     
-    // Si l'utilisateur n'existe pas ou est désactivé
+    // !user  existe
     if (userIndex === -1 || users[userIndex].status === UserStatus.DISABLED) {
       return null;
     }
     
-    // Si l'utilisateur est un client
+    
     if (requestUser.role === UserRole.CLIENT) {
-      // Il ne peut modifier que ses propres informations
+      
       if (requestUser.user_id !== userData.user_id) {
         throw new Error('Unauthorized');
       }
       
-      // Il ne peut pas changer son rôle
+      
       userData.role = requestUser.role;
     }
     
-    // Mettre à jour l'utilisateur
+    // update
     users[userIndex] = {
       ...userData,
       updated_at: new Date()
@@ -114,14 +111,14 @@ export class UsersService {
   static disable(id: number, requestUserId: number): boolean {
     const requestUser = users.find(u => u.user_id === requestUserId);
     
-    // Vérifier si l'utilisateur existe et est un administrateur
+    
     if (!requestUser || requestUser.role !== UserRole.ADMIN) {
       throw new Error('Unauthorized');
     }
     
     const userIndex = users.findIndex(u => u.user_id === id);
     
-    // Si l'utilisateur n'existe pas ou est déjà désactivé
+    
     if (userIndex === -1 || users[userIndex].status === UserStatus.DISABLED) {
       return false;
     }

@@ -1,5 +1,5 @@
 // src/controllers/tickets.controller.ts
-// src/controllers/tickets.controller.ts
+
 import { Router, Request, Response } from 'express';
 import { TicketsService } from '../services/tickets.service';
 import { TicketStatus, TicketPriority } from '../models/ticket.model';
@@ -11,13 +11,13 @@ ticketsController.post('/', (req: Request, res: Response) => {
   const idUser = Number(req.query.idUser || req.body.idUser);
   
   try {
-    // Assurer que les champs requis par le guard sont présents
+   
     const ticketData = {
-      order_fk: req.body.order_fk || 0, // Valeur par défaut pour order_fk
+      order_fk: req.body.order_fk || 0, 
       title: req.body.title,
       description: req.body.description,
-      status: TicketStatus.OPEN, // Par défaut, les nouveaux tickets sont ouverts
-      priority: req.body.priority || TicketPriority.MEDIUM // Priorité par défaut si non spécifiée
+      status: TicketStatus.OPEN, 
+      priority: req.body.priority || TicketPriority.MEDIUM 
     };
     
     const newTicket = TicketsService.create(idUser, ticketData);
@@ -27,7 +27,7 @@ ticketsController.post('/', (req: Request, res: Response) => {
   }
 });
 
-// Reste du contrôleur...
+
 
 ticketsController.get('/', (req: Request, res: Response) => {
   const idUser = Number(req.query.idUser);
