@@ -4,8 +4,7 @@ import { isProduct } from '../utils/guards';
 
 // Middleware d'authentification
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  // Skip auth for the root endpoint
-  if (req.path === '/') {
+  if (req.path === '/' || (req.path === '/users' && req.method === 'POST')) {
     return next();
   }
 
@@ -38,7 +37,6 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     (req as any).authenticatedUser = user;
     (req as any).userId = userId;
     next();
-    
   } catch (error) {
     return res.status(401).send('Authentication failed');
   }

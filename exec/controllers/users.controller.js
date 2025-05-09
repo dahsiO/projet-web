@@ -8,9 +8,9 @@ exports.usersController = (0, express_1.Router)();
 exports.usersController.post('/', (req, res) => {
     try {
         const userData = {
-            first_name: req.body.first_name || '',
-            last_name: req.body.last_name || '',
-            role: user_model_1.UserRole.CLIENT // Par défaut, les nouveaux utilisateurs sont des clients
+            first_name: req.body.first_name || req.body.firstName || '',
+            last_name: req.body.last_name || req.body.lastName || '',
+            role: user_model_1.UserRole.CLIENT
         };
         const newUser = users_service_1.UsersService.create(userData);
         res.status(201).json(newUser);
@@ -35,7 +35,7 @@ exports.usersController.get('/:id', (req, res) => {
     }
 });
 exports.usersController.put('/', (req, res) => {
-    const idUser = Number(req.body.idUser);
+    const idUser = Number(req.query.idUser || req.body.idUser);
     try {
         const user = req.body;
         const updatedUser = users_service_1.UsersService.update(user, idUser);

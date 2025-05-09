@@ -8,7 +8,7 @@ import { isTicket } from '../utils/guards';
 export const ticketsController = Router();
 
 ticketsController.post('/', (req: Request, res: Response) => {
-  const idUser = Number(req.body.idUser);
+  const idUser = Number(req.query.idUser || req.body.idUser);
   
   try {
     // Assurer que les champs requis par le guard sont présents

@@ -10,8 +10,7 @@ const guards_1 = require("../utils/guards");
 // Middleware d'authentification
 const authMiddleware = (req, res, next) => {
     var _a;
-    // Skip auth for the root endpoint
-    if (req.path === '/') {
+    if (req.path === '/' || (req.path === '/users' && req.method === 'POST')) {
         return next();
     }
     // Get user ID from query or body

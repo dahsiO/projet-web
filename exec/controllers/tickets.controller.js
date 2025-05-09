@@ -8,7 +8,7 @@ const tickets_service_1 = require("../services/tickets.service");
 const ticket_model_1 = require("../models/ticket.model");
 exports.ticketsController = (0, express_1.Router)();
 exports.ticketsController.post('/', (req, res) => {
-    const idUser = Number(req.body.idUser);
+    const idUser = Number(req.query.idUser || req.body.idUser);
     try {
         // Assurer que les champs requis par le guard sont présents
         const ticketData = {

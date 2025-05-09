@@ -7,9 +7,9 @@ export const usersController = Router();
 usersController.post('/', (req: Request, res: Response) => {
   try {
     const userData = {
-      first_name: req.body.first_name || '',
-      last_name: req.body.last_name || '',
-      role: UserRole.CLIENT // Par défaut, les nouveaux utilisateurs sont des clients
+      first_name: req.body.first_name || req.body.firstName || '',
+      last_name: req.body.last_name || req.body.lastName || '',
+      role: UserRole.CLIENT
     };
     
     const newUser = UsersService.create(userData);
@@ -18,7 +18,6 @@ usersController.post('/', (req: Request, res: Response) => {
     res.status(400).send('Invalid data');
   }
 });
-
 usersController.get('/:id', (req: Request, res: Response) => {
   const idUser = Number(req.query.idUser);
   
@@ -35,7 +34,8 @@ usersController.get('/:id', (req: Request, res: Response) => {
 });
 
 usersController.put('/', (req: Request, res: Response) => {
-  const idUser = Number(req.body.idUser);
+  const idUser = Number(req.query.idUser || req.body.idUser);
+  
   
   try {
     const user = req.body as User;
