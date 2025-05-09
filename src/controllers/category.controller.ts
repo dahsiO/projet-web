@@ -7,7 +7,7 @@ import {
   updateCategory,
   disableCategory
 } from '../services/category.service';
-import { initDb } from '../db';
+import { initDb } from './db';
 
 export const getAvailableCategories = async (req: Request, res: Response) => {
   const categories = await findAvailableCategories();
