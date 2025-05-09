@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { initDb } from '../db/database'; // Chemin mis à jour
+import { initDb } from '../db';
 
 export async function getAllProductsAdmin(req: Request, res: Response) {
   try {

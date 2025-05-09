@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { OrdersService } from '../services/order.service';
 
 export const create = (req: Request, res: Response) => {
-  const userId = req.userId;
+  const userId = (req as any).userId;
   if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
   const order = OrdersService.create(userId);

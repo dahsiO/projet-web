@@ -4,7 +4,7 @@ import path from 'path';
 
 export async function initDb() {
   return open({
-    filename: path.resolve(__dirname, '../../../project.db'),
+    filename: path.resolve(__dirname, '../../../cozycorner.db'),
     driver: sqlite3.Database
   });
 }

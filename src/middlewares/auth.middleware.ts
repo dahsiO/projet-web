@@ -35,10 +35,10 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     }
 
     // Store user info in request for later use
-    req.authenticatedUser = user;
-    req.userId = userId;
-    
+    (req as any).authenticatedUser = user;
+    (req as any).userId = userId;
     next();
+    
   } catch (error) {
     return res.status(401).send('Authentication failed');
   }
