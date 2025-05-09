@@ -10,17 +10,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const product_services_1 = require("../services/product.services");
-const product_controller_1 = require("../controllers/product.controller");
-const auth_middleware_1 = require("../middleware/auth.middleware");
-const validateCategoryIdParam_1 = require("../middleware/validateCategoryIdParam");
+const category_controller_1 = require("../controllers/category.controller");
+const db_1 = require("../db");
 const router = (0, express_1.Router)();
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const db = yield (0, db_1.initDb)();
     const include = req.query.includeUnavailable === 'true';
-    const products = yield (0, product_services_1.findProducts)(include);
-    res.json(products);
+    const query = include ? `SELECT * FROM categories` : `SELECT * FROM categories WHERE status = 'AVAILABLE'`;
+    const result = yield db.all(query);
+    res.json(result);
 }));
-router.get('/:id', validateCategoryIdParam_1.resolveIdParam, auth_middleware_1.validateProductIdParam, product_controller_1.getProductById);
-router.get('/:id/full', validateCategoryIdParam_1.resolveIdParam, auth_middleware_1.validateProductIdParam, product_controller_1.getProductDetails);
-router.put('/', auth_middleware_1.validateProduct, product_controller_1.updateProductGlobal);
+router.get('/:id', category_controller_1.getCategoryBaseInfo);
+router.post('/', category_controller_1.createNewCategory);
+router.put('/', category_controller_1.updateCategoryGlobal);
+router.delete('/:id', category_controller_1.disableExistingCategory);
 exports.default = router;

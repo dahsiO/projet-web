@@ -1,47 +1,37 @@
 "use strict";
-// src/utils/guards.ts
+// src/guards/product.guard.ts
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isNumber = isNumber;
-exports.isString = isString;
+exports.isProduct = isProduct;
+exports.isCategory = isCategory;
 exports.isUser = isUser;
-exports.isTicket = isTicket;
-/**
- * Validates if input is a number
- */
-function isNumber(data) {
-    return data !== undefined && data !== null && typeof data === 'number' && !isNaN(data);
+exports.isUserUpdate = isUserUpdate;
+exports.isValidId = isValidId;
+function isProduct(data) {
+    return (typeof data === 'object' && data !== null &&
+        typeof data.name === 'string' &&
+        typeof data.description === 'string' &&
+        typeof data.price === 'number' &&
+        typeof data.category === 'number');
 }
-/**
- * Validates if input is a string
- */
-function isString(data) {
-    return data !== undefined && data !== null && typeof data === 'string';
+// src/guards/category.guard.ts
+function isCategory(data) {
+    return (typeof data === 'object' && data !== null &&
+        typeof data.name === 'string' &&
+        typeof data.description === 'string');
 }
-/**
- * Validates if input is a valid User object
- */
+// src/guards/user.guard.ts
 function isUser(data) {
-    if (data && typeof data === 'object' &&
-        (data.user_id === undefined || typeof data.user_id === 'number') &&
-        'first_name' in data && typeof data.first_name === 'string' &&
-        'last_name' in data && typeof data.last_name === 'string' &&
-        'role' in data && typeof data.role === 'string' &&
-        'status' in data && typeof data.status === 'string') {
-        return true;
-    }
-    return false;
+    return (typeof data === 'object' && data !== null &&
+        typeof data.first_name === 'string' &&
+        typeof data.last_name === 'string' &&
+        typeof data.role === 'string' &&
+        (data.role === 'client' || data.role === 'admin'));
 }
-/**
- * Validates if input is a valid Ticket object
- */
-function isTicket(data) {
-    if (data && typeof data === 'object' &&
-        (data.ticket_id === undefined || typeof data.ticket_id === 'number') &&
-        'order_fk' in data && typeof data.order_fk === 'number' &&
-        'title' in data && typeof data.title === 'string' &&
-        'description' in data && typeof data.description === 'string' &&
-        ('status' in data ? typeof data.status === 'string' : true)) {
-        return true;
-    }
-    return false;
+function isUserUpdate(data) {
+    return (typeof data === 'object' && data !== null &&
+        (typeof data.first_name === 'string' || data.first_name === undefined) &&
+        (typeof data.last_name === 'string' || data.last_name === undefined));
+}
+function isValidId(id) {
+    return typeof id === 'number' && id > 0;
 }

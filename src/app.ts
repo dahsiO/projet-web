@@ -4,6 +4,11 @@ import { Request, Response } from 'express';
 import { usersController } from './controllers/users.controller';
 import { ticketsController } from './controllers/tickets.controller';
 import { authMiddleware } from './middlewares/auth.middleware';
+import  {orderRoute}  from './routes/order.route';
+import productRoutes from './routes/product.routes'
+import adminRoutes from './routes/admin.routes'
+import { initDb } from './db/database';  // Chemin mis à jour
+import categoryRoutes from './routes/category.routes';
 
 export const app = express();
 app.use(cors());
@@ -16,3 +21,7 @@ app.get('/', (req: Request, res: Response) => {
 app.use(authMiddleware);
 app.use('/users', usersController);
 app.use('/tickets', ticketsController);
+app.use('/orders', orderRoute);
+app.use('/admin', adminRoutes);   // Routes pour /admin
+app.use('/products', productRoutes); // Routes pour /products
+app.use('/categories', categoryRoutes); // ➔ ajout ici
